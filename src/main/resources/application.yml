@@ -1,0 +1,125 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: intelligent-alert-system
+  
+  # MVC Configuration - Static resources served from /static/** only
+  mvc:
+    static-path-pattern: /static/**
+  
+  web:
+    resources:
+      static-locations: classpath:/static/
+      add-mappings: true
+  
+  # Database Configuration (H2 for development, we can switch to PostgreSQL for production)
+  # Using file-based H2 for data persistence - Access via H2 Console at http://localhost:8080/h2-console
+  datasource:
+    url: jdbc:h2:file:./data/alertdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  # Caching Configuration
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=600s
+    cache-names:
+      - 'alerts'
+      - 'rules'
+      - 'dashboard'
+      - 'drivers'
+  
+  # Scheduler Configuration
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+# JWT Configuration
+jwt:
+  secret: YourSuperSecretKeyForJWTTokenGenerationMustBeLongEnoughForHS512Algorithm
+  expiration: 86400000 # 24 hours in milliseconds
+  refresh-expiration: 604800000 # 7 days
+
+# Alert System Configuration
+alert:
+  auto-close:
+    enabled: true
+    cron: "0 */5 * * * *" # Every 5 minutes
+    batch-size: 100
+  
+  escalation:
+    enabled: true
+    check-interval: 60000 # 1 minute in milliseconds
+  
+  retention:
+    days: 90 # Keep alerts for 90 days
+  
+  rules:
+    config-path: classpath:rules.json
+    reload-interval: 300000 # Reload rules every 5 minutes
+
+# Monitoring & Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.movesync: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/alert-system.log
+    max-size: 10MB
+    max-history: 30
+
+# API Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+  default-produces-media-type: 'application/json'
+  default-consumes-media-type: 'application/json'
+

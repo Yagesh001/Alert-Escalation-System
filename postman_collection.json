@@ -1,0 +1,453 @@
+{
+  "info": {
+    "name": "Intelligent Alert System API",
+    "description": "Complete API collection for the Intelligent Alert Escalation & Resolution System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    pm.environment.set('token', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login - Operator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"operator\",\n  \"password\": \"operator123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/auth/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "auth", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alert Management",
+      "item": [
+        {
+          "name": "Create Alert - Overspeeding",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertType\": \"OVERSPEEDING\",\n  \"severity\": \"WARNING\",\n  \"driverId\": \"D001\",\n  \"vehicleId\": \"V001\",\n  \"routeId\": \"R001\",\n  \"metadata\": {\n    \"speed\": 85,\n    \"limit\": 60,\n    \"location\": \"Highway 101\",\n    \"time\": \"10:30 AM\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "Create Alert - Compliance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertType\": \"COMPLIANCE_DOCUMENT_EXPIRY\",\n  \"severity\": \"WARNING\",\n  \"driverId\": \"D002\",\n  \"metadata\": {\n    \"documentType\": \"license\",\n    \"expiryDate\": \"2024-01-15\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "Create Alert - Negative Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertType\": \"FEEDBACK_NEGATIVE\",\n  \"severity\": \"INFO\",\n  \"driverId\": \"D003\",\n  \"metadata\": {\n    \"rating\": 1,\n    \"comment\": \"Rude behavior\",\n    \"passenger\": \"P001\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "Get Alert by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/:alertId",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", ":alertId"],
+              "variable": [
+                {
+                  "key": "alertId",
+                  "value": "REPLACE_WITH_ALERT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Active Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Alerts by Driver",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/driver/:driverId",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", "driver", ":driverId"],
+              "variable": [
+                {
+                  "key": "driverId",
+                  "value": "D001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resolve Alert",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Driver has been counseled and acknowledged the violation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/:alertId/resolve",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", ":alertId", "resolve"],
+              "variable": [
+                {
+                  "key": "alertId",
+                  "value": "REPLACE_WITH_ALERT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Alert History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/:alertId/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", ":alertId", "history"],
+              "variable": [
+                {
+                  "key": "alertId",
+                  "value": "REPLACE_WITH_ALERT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Alert Condition",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/:alertId/condition?condition=DOCUMENT_RENEWED",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", ":alertId", "condition"],
+              "query": [
+                {
+                  "key": "condition",
+                  "value": "DOCUMENT_RENEWED"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "alertId",
+                  "value": "REPLACE_WITH_ALERT_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Analytics",
+      "item": [
+        {
+          "name": "Get Dashboard Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/dashboard/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "dashboard", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Get Auto-Closed Alerts (24h)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/dashboard/auto-closed?hours=24",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "dashboard", "auto-closed"],
+              "query": [
+                {
+                  "key": "hours",
+                  "value": "24"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Alert Trends (7 days)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/dashboard/trends?days=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "dashboard", "trends"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Alert Drill-Down",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/dashboard/alert/:alertId/drilldown",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "dashboard", "alert", ":alertId", "drilldown"],
+              "variable": [
+                {
+                  "key": "alertId",
+                  "value": "REPLACE_WITH_ALERT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/dashboard/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "dashboard", "statistics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Demo Scenarios",
+      "item": [
+        {
+          "name": "Escalation Demo - Alert 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertType\": \"OVERSPEEDING\",\n  \"severity\": \"WARNING\",\n  \"driverId\": \"DEMO_DRIVER\",\n  \"vehicleId\": \"DEMO_VEHICLE\",\n  \"metadata\": {\n    \"speed\": 85,\n    \"location\": \"Point A\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "Escalation Demo - Alert 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertType\": \"OVERSPEEDING\",\n  \"severity\": \"WARNING\",\n  \"driverId\": \"DEMO_DRIVER\",\n  \"vehicleId\": \"DEMO_VEHICLE\",\n  \"metadata\": {\n    \"speed\": 90,\n    \"location\": \"Point B\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "Escalation Demo - Alert 3 (Triggers)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alertType\": \"OVERSPEEDING\",\n  \"severity\": \"WARNING\",\n  \"driverId\": \"DEMO_DRIVER\",\n  \"vehicleId\": \"DEMO_VEHICLE\",\n  \"metadata\": {\n    \"speed\": 92,\n    \"location\": \"Point C\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts"]
+            }
+          }
+        },
+        {
+          "name": "Check Demo Driver Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/alerts/driver/DEMO_DRIVER",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "alerts", "driver", "DEMO_DRIVER"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

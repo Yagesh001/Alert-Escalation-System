@@ -1,0 +1,53 @@
+{
+  "rules": [
+    {
+      "alertType": "OVERSPEEDING",
+      "escalateIfCount": 3,
+      "windowMinutes": 60,
+      "escalationSeverity": "CRITICAL",
+      "autoCloseIfNoRepeat": true,
+      "autoCloseWindowMinutes": 120
+    },
+    {
+      "alertType": "FEEDBACK_NEGATIVE",
+      "escalateIfCount": 2,
+      "windowMinutes": 1440,
+      "escalationSeverity": "CRITICAL",
+      "autoCloseIfNoRepeat": false,
+      "autoCloseWindowMinutes": 2880
+    },
+    {
+      "alertType": "COMPLIANCE_DOCUMENT_EXPIRY",
+      "escalateIfCount": 1,
+      "windowMinutes": 10080,
+      "escalationSeverity": "WARNING",
+      "autoCloseIf": "DOCUMENT_RENEWED",
+      "autoCloseWindowMinutes": 20160
+    },
+    {
+      "alertType": "HARSH_BRAKING",
+      "escalateIfCount": 5,
+      "windowMinutes": 120,
+      "escalationSeverity": "WARNING",
+      "autoCloseIfNoRepeat": true,
+      "autoCloseWindowMinutes": 240
+    },
+    {
+      "alertType": "ROUTE_DEVIATION",
+      "escalateIfCount": 2,
+      "windowMinutes": 30,
+      "escalationSeverity": "CRITICAL",
+      "autoCloseIfNoRepeat": true,
+      "autoCloseWindowMinutes": 60
+    },
+    {
+      "alertType": "MAINTENANCE_OVERDUE",
+      "escalateIfCount": 2,
+      "windowMinutes": 10080,
+      "escalationSeverity": "WARNING",
+      "autoCloseIfNoRepeat": false,
+      "autoCloseWindowMinutes": 20160
+    }
+  ]
+}
+
